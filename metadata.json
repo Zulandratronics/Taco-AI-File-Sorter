@@ -1,0 +1,6 @@
+{
+  "name": "AI File Sorter",
+  "description": "Content-aware file organization and intelligent renaming system with local CPU and GPU accelerated inference, smart taxonomy, duplicate detection, and batch processing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
