@@ -1,18 +1,138 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI File Sorter</title>
-    <meta name="description" content="Content-aware file organization and intelligent renaming system with local CPU and GPU accelerated inference, smart taxonomy, duplicate detection, and batch processing." />
-    <meta property="og:title" content="AI File Sorter" />
-    <meta property="og:description" content="Content-aware file organization and intelligent renaming system with local CPU and GPU accelerated inference, smart taxonomy, duplicate detection, and batch processing." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taco AI File Sorter — Local-First File Organizer & Rollback Utility</title>
+  <meta name="description" content="Zero-telemetry, local-first file organizer with 6 niche taxonomy profiles, chunked SHA-256 duplicate detection, optional local Ollama classification, safe escaped scripts, and Python CLI with 1-command rollback.">
+  <link rel="stylesheet" href="./web/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="hero">
+      <div class="badge">Local-First · Zero Telemetry · MIT Open Source</div>
+      <h1><span>Taco AI File Sorter</span></h1>
+      <p>
+        Content-aware file organization and renaming powered by an instant offline heuristic
+        taxonomy engine + optional local <strong>Ollama (CPU/GPU)</strong> classification.
+        Preview every move, catch duplicates, and export safe scripts—or run the Python CLI
+        directly with 1-command rollback.
+      </p>
+    </header>
 
+    <main>
+      <section class="card">
+        <div class="controls-grid">
+          <div class="field">
+            <label for="profile-select">Niche Taxonomy Profile</label>
+            <select id="profile-select"></select>
+          </div>
+          <div class="field">
+            <label for="naming-select">Filename Pattern</label>
+            <select id="naming-select">
+              <option value="profile_default">Use Profile Default</option>
+              <option value="date_category_name">YYYY-MM-DD_category_name</option>
+              <option value="category_date_name">category_YYYY-MM-DD_name</option>
+              <option value="kebab_case">kebab-case-name</option>
+              <option value="original_clean">clean_snake_name</option>
+              <option value="keep_original">Keep Original Name</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="profile-desc" class="profile-desc"></div>
+
+        <div id="dropzone" class="dropzone">
+          <p>Drop files here, pick a local folder (stays 100% in your browser), or load a realistic sample messy folder:</p>
+          <input id="folder-input" type="file" webkitdirectory multiple class="hidden">
+          <input id="files-input" type="file" multiple class="hidden">
+          <div class="btn-row">
+            <button type="button" id="btn-pick-folder" class="btn btn-primary">Pick Local Folder</button>
+            <button type="button" id="btn-pick-files" class="btn">Pick Files</button>
+            <button type="button" id="btn-load-sample" class="btn">Load Sample Messy Folder (12 Files)</button>
+            <button type="button" id="btn-clear" class="btn">Clear</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="workspace" class="hidden">
+        <div class="stats-strip">
+          <div class="stat-box"><span>Files Planned</span><strong id="stat-files">0</strong></div>
+          <div class="stat-box"><span>Target Folders</span><strong id="stat-folders">0</strong></div>
+          <div class="stat-box"><span>Duplicates Found</span><strong id="stat-dups">0</strong></div>
+          <div class="stat-box"><span>Excluded</span><strong id="stat-excluded">0</strong></div>
+        </div>
+
+        <section class="card">
+          <div class="table-toolbar">
+            <input id="filter-input" class="search-input" type="search" placeholder="Filter by filename, folder, or category...">
+            <div class="btn-row btn-row-left">
+              <button type="button" id="btn-dl-ps1" class="btn btn-primary btn-sm">Download organize.ps1</button>
+              <button type="button" id="btn-dl-sh" class="btn btn-sm">Download organize.sh</button>
+              <button type="button" id="btn-dl-csv" class="btn btn-sm">Export CSV</button>
+              <button type="button" id="btn-dl-json" class="btn btn-sm">Export JSON Plan</button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th style="width:42px;">Keep</th>
+                  <th>Original Path</th>
+                  <th>Proposed Destination</th>
+                  <th>Category &amp; Engine</th>
+                  <th>Reasoning</th>
+                </tr>
+              </thead>
+              <tbody id="plan-tbody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="card">
+          <details>
+            <summary style="cursor:pointer;font-weight:700;font-size:14.5px;">
+              Optional: Refine Classifications with Local Ollama (CPU/GPU LLM)
+            </summary>
+            <p style="font-size:13px;color:var(--muted);margin:10px 0 12px;">
+              Connect directly from your browser to a running local Ollama server (set <code>OLLAMA_ORIGINS="*"</code> if using from GitHub Pages, or use the Python CLI below with zero CORS setup).
+            </p>
+            <div class="controls-grid">
+              <div class="field">
+                <label for="ollama-url">Ollama Endpoint</label>
+                <input id="ollama-url" type="text" value="http://localhost:11434">
+              </div>
+              <div class="field">
+                <label for="ollama-model">Model</label>
+                <input id="ollama-model" type="text" value="llama3.2">
+              </div>
+            </div>
+            <button type="button" id="btn-ollama-refine" class="btn btn-primary btn-sm">Refine Active Files via Ollama</button>
+            <div id="ollama-status" class="status-msg"></div>
+          </details>
+        </section>
+
+        <section class="card">
+          <h3 style="margin:0 0 8px;font-size:14.5px;">Direct Local Execution + 1-Command Rollback (Python CLI)</h3>
+          <p style="margin:0 0 10px;font-size:13px;color:var(--muted);">
+            For folders with thousands of files, run the pure-stdlib Python CLI directly on disk with atomic collision handling and automatic rollback manifests:
+          </p>
+          <div id="cli-snippet" class="cli-box"></div>
+        </section>
+      </section>
+    </main>
+
+    <footer>
+      <div><strong>Taco AI File Sorter v1.0.0</strong> · MIT License · Local-first, zero telemetry</div>
+      <div>
+        <a href="https://github.com/Zulandratronics/Taco-AI-File-Sorter" target="_blank" rel="noopener noreferrer">GitHub Repo</a>
+      </div>
+    </footer>
+  </div>
+
+  <script defer src="./web/profiles.js"></script>
+  <script defer src="./web/engine.js"></script>
+  <script defer src="./web/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+title: "Taco AI File Sorter: Local-First Content-Aware File Organization & Rollback Utility"
+message: "If you reference this software, please use the metadata below."
+type: software
+authors:
+  - family-names: "Dockery"
+    given-names: "Kenneth L."
+    alias: "ZEUX"
+repository-code: "https://github.com/Zulandratronics/Taco-AI-File-Sorter"
+url: "https://zulandratronics.github.io/Taco-AI-File-Sorter/"
+license: MIT
+version: "1.0.0"
+date-released: "2026-11-23"

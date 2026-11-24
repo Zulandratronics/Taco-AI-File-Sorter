@@ -1,0 +1,59 @@
+[build-system]
+requires = ["setuptools>=77.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taco-ai-file-sorter"
+version = "1.0.0"
+description = "Local-first, privacy-preserving file organizer & intelligent renamer with niche taxonomy profiles, chunked SHA-256 duplicate detection, optional Ollama LLM classification, and 1-command rollback."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [
+  { name = "Kenneth L. Dockery" }
+]
+keywords = [
+  "file-organizer",
+  "file-renamer",
+  "local-first",
+  "ollama",
+  "duplicate-finder",
+  "cli",
+  "privacy",
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Utilities",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Zulandratronics/Taco-AI-File-Sorter"
+Repository = "https://github.com/Zulandratronics/Taco-AI-File-Sorter"
+"Live Demo" = "https://zulandratronics.github.io/Taco-AI-File-Sorter/"
+Issues = "https://github.com/Zulandratronics/Taco-AI-File-Sorter/issues"
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0",
+]
+
+[project.scripts]
+taco-sort = "tacosort.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tacosort*"]
+
+[tool.setuptools.package-data]
+tacosort = ["data/*.json"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
