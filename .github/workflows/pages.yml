@@ -22,7 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Stage static web app
         run: |
           mkdir -p _site/web
@@ -31,8 +31,8 @@ jobs:
           cp web/profiles.js _site/web/profiles.js
           cp web/engine.js _site/web/engine.js
           cp web/app.js _site/web/app.js
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v6
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: "_site"
 
@@ -44,4 +44,4 @@ jobs:
     needs: build
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
